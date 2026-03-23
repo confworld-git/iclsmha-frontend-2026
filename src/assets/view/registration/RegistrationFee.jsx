@@ -590,8 +590,8 @@ const RegistrationFee = () => {
                       </label>
                     </td>
                     <td className="p-4 border-r border-gray-200">
-                      <label className={!isFinal ? "line-through text-gray-400" : ""}>
-                        <input disabled={!isFinal} type="radio" name="price" onChange={() => handleBaseSelect(item.final, fee.title, item.category)} value={item.final} className="mr-2" />
+                      <label >
+                        <input  type="radio" name="price" onChange={() => handleBaseSelect(item.final, fee.title, item.category)} value={item.final} className="mr-2" />
                         {item.final}
                       </label>
                     </td>
@@ -633,8 +633,8 @@ const RegistrationFee = () => {
                       </label>
                     </td>
                     <td className="p-4">
-                      <label className={!isFinal ? "line-through text-gray-400" : ""}>
-                        <input disabled={!isFinal} type="radio" name="price" onChange={() => handleBaseSelect(item.final, fee.title, item.category)} value={item.final} className="mr-2" />
+                      <label >
+                        <input  type="radio" name="price" onChange={() => handleBaseSelect(item.final, fee.title, item.category)} value={item.final} className="mr-2" />
                         {item.final}
                       </label>
                     </td>
