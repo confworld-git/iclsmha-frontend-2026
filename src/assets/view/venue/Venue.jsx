@@ -52,17 +52,16 @@ const Venue = () => {
         {/* Title and Subtitle */}
         <div className="text-center ">
           <h1 className="text-3xl md:text-4xl font-bold text-cyan-600  leading-tight animate-fade-in-down">
-            Our Venue
+             Venue
           </h1>
-          <h2 className="mt-4 text-2xl font-semibold text-purple-700 animate-fade-in-up">
-            Manila, Philippines
-          </h2>
-          <p className="mt-4 text-lg text-gray-700 max-w-3xl mx-auto animate-fade-in">
+         
+          
+        </div>
+<Hotel/>
+<p className="mt-4 text-lg text-gray-700 max-w-3xl mx-auto animate-fade-in pb-4">
             Experience the vibrant culture, modern marvels, and natural beauty
             of Philippines's capital city.
           </p>
-        </div>
-<Hotel/>
         {/* Image Gallery */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
           {klImages.map((image, index) => (
