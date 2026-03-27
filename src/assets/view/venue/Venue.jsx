@@ -1,5 +1,6 @@
 import React from "react";
 import { Helmet } from "react-helmet";
+import Hotel from "./Hotel";
 
 const Venue = () => {
   // Placeholder images for Kuala Lumpur
@@ -49,7 +50,7 @@ const Venue = () => {
 
       <div className="w-full relative z-10">
         {/* Title and Subtitle */}
-        <div className="text-center mb-16">
+        <div className="text-center ">
           <h1 className="text-3xl md:text-4xl font-bold text-cyan-600  leading-tight animate-fade-in-down">
             Our Venue
           </h1>
@@ -61,7 +62,7 @@ const Venue = () => {
             of Philippines's capital city.
           </p>
         </div>
-
+<Hotel/>
         {/* Image Gallery */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
           {klImages.map((image, index) => (

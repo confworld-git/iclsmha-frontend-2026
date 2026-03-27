@@ -178,7 +178,8 @@ export default function HeroSection() {
                 <circle cx="12" cy="10" r="3" />
               </svg>
               <span className="text-sm text-indigo-700 font-semibold tracking-wide">
-                Location: Manila, Philippines
+                Venue: Acacia Hotel Manila<br/>
+5400 E Asia Dr, Alabang, Muntinlupa,<br/> 1781 Metro Manila, Philippines
               </span>
             </div>
           </div>
