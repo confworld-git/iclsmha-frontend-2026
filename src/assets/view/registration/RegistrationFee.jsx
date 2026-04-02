@@ -26,7 +26,7 @@ const calculatePricing = ({ baseAmount, participantCategory, hasMembership, hasC
     membershipDiscount: 0,
     couponDiscount: 0,
     totalDiscount: 0,
-    subtotal: base,
+    // subtotal: base,
     finalAmount: base,
     bankTax: 0,
     total: base,
@@ -34,23 +34,21 @@ const calculatePricing = ({ baseAmount, participantCategory, hasMembership, hasC
 
   if (hasMembership && hasCoupon) {
     calc.totalDiscount = base * 0.10;
-    calc.membershipFee = membershipFeeAmount;
     calc.membershipDiscount = base * 0.05;
     calc.couponDiscount = base * 0.05;
-    calc.finalAmount = base - calc.totalDiscount + calc.membershipFee;
-  } else if (hasMembership && !hasCoupon) {
+    calc.membershipFee = membershipFeeAmount;
+  } else if (hasMembership) {
     calc.membershipDiscount = base * 0.05;
     calc.totalDiscount = calc.membershipDiscount;
     calc.membershipFee = membershipFeeAmount;
-    calc.finalAmount = base - calc.membershipDiscount + calc.membershipFee;
-  } else if (!hasMembership && hasCoupon) {
+  } else if (hasCoupon) {
     calc.couponDiscount = base * 0.05;
     calc.totalDiscount = calc.couponDiscount;
-    calc.finalAmount = base - calc.couponDiscount;
-  } else {
-    calc.finalAmount = base;
   }
-
+// Discounted base, then journal + addons + membership added outside this fn
+  const discountedBase = base - calc.totalDiscount;
+  calc.finalAmount = discountedBase + calc.membershipFee;
+  // Note: journal and addons are added in CheckoutPanel display and in the payload builder
   const bankTax = calc.finalAmount * 0.060;
   calc.bankTax = parseFloat(bankTax.toFixed(2));
   calc.total = parseFloat((calc.finalAmount + bankTax).toFixed(2));
@@ -327,27 +325,28 @@ const RegistrationFee = () => {
   // Discounts are applied to (fee + journal + addons) combined
   const journalAmount = selectedJournal?.specialPrice || 0;
   const addonsAmount = selectedAddons.reduce((sum, a) => sum + a.price, 0);
-  const combinedBase = selectedBase
-    ? selectedBase.value + journalAmount + addonsAmount
-    : 0;
+  
 
-  const pricing = selectedBase
-    ? calculatePricing({
-        baseAmount: combinedBase,
+const pricing = selectedBase
+  ? (() => {
+      const calc = calculatePricing({
+        baseAmount: selectedBase.value,
         participantCategory,
         hasMembership: membership,
         hasCoupon: couponDiscount > 0,
-      })
-    : {
-        baseAmount: 0,
-        membershipDiscount: 0,
-        couponDiscount: 0,
-        membershipFee: 0,
-        totalDiscount: 0,
-        finalAmount: 0,
-        bankTax: 0,
-        total: 0,
+      });
+      // Add journal + addons AFTER discount calculation
+      const extrasTotal = journalAmount + addonsAmount;
+      const finalWithExtras = calc.finalAmount + extrasTotal;
+      const bankTax = parseFloat((finalWithExtras * 0.060).toFixed(2));
+      return {
+        ...calc,
+        finalAmount: parseFloat(finalWithExtras.toFixed(2)),
+        bankTax,
+        total: parseFloat((finalWithExtras + bankTax).toFixed(2)),
       };
+    })()
+  : { baseAmount: 0, membershipDiscount: 0, couponDiscount: 0, membershipFee: 0, totalDiscount: 0, finalAmount: 0, bankTax: 0, total: 0 };
 
   const handleBaseSelect = (value, title, category) => {
     setSelectedBase({ value, title, category });
@@ -410,9 +409,9 @@ const RegistrationFee = () => {
     const selectedFeePayload = {
       title:              selectedBase.title,
       category:           selectedBase.category,
-      value:              pricing.baseAmount,       // combinedBase (fee+journal+addons)
+      value:              pricing.finalAmount,       // combinedBase (fee+journal+addons)
       convenience_price:  pricing.bankTax,
-      total:              pricing.finalAmount,
+      total:              pricing.total,
       discountApplied:    membership && couponDiscount > 0 ? 10 : membership || couponDiscount > 0 ? 5 : 0,
       membershipFee:      pricing.membershipFee,
       membershipSelected: membership,
